@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>وصلني — النسخة الأولى</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="toast"></div>
+
+<header class="topbar">
+  <div class="brand"><span>🚕</span><b>وصلني</b></div>
+  <div id="userBadge" class="user-badge hidden"></div>
+</header>
+
+<main>
+  <section id="landing" class="screen">
+    <div class="hero">
+      <div class="hero-icon">🚕</div>
+      <h1>مشوارك أسهل مع <span>وصلني</span></h1>
+      <p>اطلب سيارة، تابع رحلتك، وخليك مرتاح.</p>
+      <div class="actions">
+        <button class="primary" onclick="showAuth('login')">تسجيل الدخول</button>
+        <button class="secondary" onclick="showAuth('register')">إنشاء حساب</button>
+      </div>
+      <button class="link-btn" onclick="showCaptainRegister()">أنا كابتن وأريد التسجيل</button>
+    </div>
+  </section>
+
+  <section id="auth" class="screen hidden">
+    <div class="card auth-card">
+      <button class="back" onclick="goHome()">← رجوع</button>
+      <div id="authContent"></div>
+    </div>
+  </section>
+
+  <section id="customerApp" class="screen hidden">
+    <div class="app-grid">
+      <div class="map fake-map">
+        <div class="map-grid"></div>
+        <div class="pin user-pin">📍</div>
+        <div class="map-label">موقعك الحالي</div>
+        <div class="locate">◎</div>
+      </div>
+      <div class="card ride-card">
+        <div class="hello" id="customerHello"></div>
+        <h2>إلى أين تريد الذهاب؟</h2>
+        <label>موقع الانطلاق</label>
+        <input id="pickup" placeholder="حدد موقعك الحالي" value="موقعك الحالي">
+        <label>الوجهة</label>
+        <input id="destination" placeholder="مثلاً: شارع الحبوبي">
+        <div class="estimate">
+          <div><span>المسافة</span><b id="distance">—</b></div>
+          <div><span>الأجرة التقديرية</span><b id="fare">—</b></div>
+        </div>
+        <button class="primary full" onclick="requestRide()">🚕 اطلب سيارة</button>
+        <button class="secondary full" onclick="logout()">تسجيل الخروج</button>
+      </div>
+    </div>
+    <div class="card status-card hidden" id="rideStatus"></div>
+  </section>
+
+  <section id="captainRegister" class="screen hidden">
+    <div class="card form-card">
+      <button class="back" onclick="goHome()">← رجوع</button>
+      <h2>تسجيل كابتن 🚕</h2>
+      <p class="muted">أرسل بياناتك ومستمسكاتك. الحساب يبقى قيد المراجعة حتى موافقة الإدارة.</p>
+      <div class="form-grid">
+        <div><label>الاسم الكامل</label><input id="capName" placeholder="الاسم الثلاثي"></div>
+        <div><label>رقم الهاتف</label><input id="capPhone" placeholder="07xxxxxxxxx"></div>
+        <div><label>تاريخ الميلاد</label><input id="capDob" type="date"></div>
+        <div><label>المحافظة / المنطقة</label><input id="capArea" placeholder="مثلاً: الناصرية"></div>
+        <div><label>نوع السيارة</label><input id="capCar" placeholder="Toyota Corolla"></div>
+        <div><label>موديل السيارة</label><input id="capModel" placeholder="2022"></div>
+        <div><label>لون السيارة</label><input id="capColor" placeholder="أبيض"></div>
+        <div><label>رقم اللوحة</label><input id="capPlate" placeholder="مثال: 12345"></div>
+      </div>
+      <h3>المستمسكات</h3>
+      <div class="docs">
+        <label class="upload">📷 صورة شخصية<input id="capPhoto" type="file" accept="image/*"></label>
+        <label class="upload">🪪 البطاقة الوطنية<input id="capId" type="file" accept="image/*,.pdf"></label>
+        <label class="upload">🪪 رخصة القيادة<input id="capLicense" type="file" accept="image/*,.pdf"></label>
+        <label class="upload">🚗 استمارة السيارة<input id="capReg" type="file" accept="image/*,.pdf"></label>
+      </div>
+      <button class="primary full" onclick="submitCaptain()">إرسال طلب التسجيل</button>
+    </div>
+  </section>
+
+  <section id="pending" class="screen hidden">
+    <div class="card pending-card">
+      <div class="pending-icon">⏳</div>
+      <h2>طلبك قيد المراجعة</h2>
+      <p>تم استلام بياناتك بنجاح. الإدارة ستراجع المستمسكات وتفعّل الحساب عند الموافقة.</p>
+      <div class="status-pill">قيد المراجعة</div>
+      <button class="secondary full" onclick="goHome()">العودة للرئيسية</button>
+    </div>
+  </section>
+
+  <section id="admin" class="screen hidden">
+    <div class="admin-head">
+      <div><h2>لوحة الإدارة</h2><p>إدارة الكباتن والطلبات</p></div>
+      <button class="secondary" onclick="logout()">خروج</button>
+    </div>
+    <div class="stats">
+      <div class="stat"><span>👥 الزبائن</span><b id="sCustomers">0</b></div>
+      <div class="stat"><span>🚕 الكباتن</span><b id="sCaptains">0</b></div>
+      <div class="stat"><span>⏳ قيد المراجعة</span><b id="sPending">0</b></div>
+      <div class="stat"><span>🟢 مفعلون</span><b id="sActive">0</b></div>
+    </div>
+    <div class="card">
+      <div class="section-title"><h3>طلبات الكباتن</h3><button class="link-btn" onclick="renderAdmin()">تحديث</button></div>
+      <div id="captainList"></div>
+    </div>
+    <div class="card">
+      <h3>تسجيل دخول الإدارة التجريبي</h3>
+      <p class="muted">الحساب التجريبي: <b>admin</b> / <b>1234</b></p>
+      <p class="small">هذه النسخة تستخدم LocalStorage للتجربة فقط، وليست مناسبة لحفظ مستمسكات حقيقية.</p>
+    </div>
+  </section>
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>
